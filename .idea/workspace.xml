@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="83c84856-fdaa-4a2f-9b60-e7d540e78db3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Antics/AI/studentAIPlayer.py" afterPath="$PROJECT_DIR$/Antics/AI/studentAIPlayer.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Antics/AI/studentAIPlayer.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Antics/AI/helmgren_peck.py" afterPath="$PROJECT_DIR$/Antics/AI/helmgren_peck.py" />
     </list>
     <ignored path="TDLearning.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="83c84856-fdaa-4a2f-9b60-e7d540e78db3" time="1385961890764" ignored="false" />
+    <file path="/helmgren_peck.py" changelist="83c84856-fdaa-4a2f-9b60-e7d540e78db3" time="1385964318858" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,10 +28,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AIPlayer.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Antics/AI/AIPlayer.py">
+      <file leaf-file-name="helmgren_peck.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Antics/AI/helmgren_peck.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="20" selection-start="0" selection-end="6758" vertical-scroll-proportion="0.0">
+            <state line="179" column="89" selection-start="7393" selection-end="7393" vertical-scroll-proportion="0.36842105">
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -37,21 +39,48 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Game.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Antics/Game.py">
+      <file leaf-file-name="Ant.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Antics/Ant.py">
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AIPlayerUtils.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Antics/AIPlayerUtils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="88" column="57" selection-start="2438" selection-end="2438" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#0#51#0" expanded="true" />
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="studentAIPlayer.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Antics/AI/studentAIPlayer.py">
+      <file leaf-file-name="Inventory.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Antics/Inventory.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="160" column="0" selection-start="6758" selection-end="6758" vertical-scroll-proportion="0.95526314">
+            <state line="15" column="0" selection-start="458" selection-end="458" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Construction.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Antics/Construction.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="2" selection-start="283" selection-end="283" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Constants.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Antics/Constants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -76,6 +105,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/Antics/AI/studentAIPlayer.py" />
+        <option value="$PROJECT_DIR$/Antics/AI/helmgren_peck.py" />
       </list>
     </option>
   </component>
@@ -333,15 +363,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Antics/Game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Antics/AI/AIPlayer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="20" selection-start="0" selection-end="6758" vertical-scroll-proportion="0.0">
@@ -351,10 +372,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Antics/AI/studentAIPlayer.py">
+    <entry file="file://$PROJECT_DIR$/Antics/Game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="160" column="0" selection-start="6758" selection-end="6758" vertical-scroll-proportion="0.95526314">
+        <state line="14" column="2" selection-start="341" selection-end="341" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/Ant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/AIPlayerUtils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="57" selection-start="2438" selection-end="2438" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/Inventory.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="458" selection-end="458" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/Construction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="2" selection-start="283" selection-end="283" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/Constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Antics/AI/helmgren_peck.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="179" column="89" selection-start="7393" selection-end="7393" vertical-scroll-proportion="0.36842105">
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

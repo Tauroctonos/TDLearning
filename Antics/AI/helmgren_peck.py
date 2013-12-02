@@ -158,3 +158,63 @@ class AIPlayer(Player):
     def getAttack(self, currentState, attackingAnt, enemyLocations):
         #Attack a random enemy.
         return enemyLocations[random.randint(0, len(enemyLocations) - 1)]
+
+    ##
+    #consolidateState
+    #Description: Consolidates the state into a smaller one to shrink the statespace.
+    #
+    #Parameters:
+    #   state - The state that is being consolidated
+    #
+    #Returns:
+    #   The consolidated game state.
+    ##
+    def consolidateState(self, state):
+        myID = state.whoseTurn
+        opID = (myID + 1) % 2
+
+        #Get the queen healths of both sides
+        queHealths = (state.inventories[myID].queen.health, state.inventories[opID].queen.health)
+
+        #Get the total healths of both sides
+        totHealths = (self.totalAntHealth(state, myID), self.totalAntHealth(state, opID))
+
+        #Get the total food of both sides
+        totFood = (state.inventories[myID].foodCount, state.inventories[opID].foodCount)
+
+        #Get the total number of tunnels
+        totTunns = (self.countTunnels(state.inventories[myID]), self.countTunnels(state.inventories[opID]))
+
+        return (queHealths, totHealths, totFood, totTunns)
+
+    ##
+    #totalAntHealth
+    #Description: Determines the value of a player's total ant health
+    #
+    #Parameters:
+    #   state - A state of the game (GameState)
+    #   playerID - The id of the player (int)
+    #
+    #Returns: the sum of the health
+    ##
+    def totalAntHealth(self, state, playerID):
+        antHealth = 0
+        for ant in state.inventories[playerID].ants:
+            antHealth += ant.health
+        return antHealth
+
+    ##
+    #countTunnels
+    #Description: Counts the tunnels that are in an inventory
+    #
+    #Parameters:
+    #  inv - the inventory we're counting in
+    #
+    #Returns: The number of tunnels they have
+    ##
+    def countTunnels(self, inv):
+        count = 0
+        for con in inv.constrs:
+            if con.type is TUNNEL:
+                count += 1
+        return count
