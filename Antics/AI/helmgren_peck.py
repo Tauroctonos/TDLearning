@@ -1,6 +1,9 @@
 import random
 from Player import *
 from Constants import *
+from Building import *
+from Ant import *
+from AIPlayerUtils import *
 from Construction import CONSTR_STATS
 from Ant import UNIT_STATS
 from Move import Move
@@ -24,6 +27,7 @@ class AIPlayer(Player):
     ##
     def __init__(self, inputPlayerId):
         super(AIPlayer,self).__init__(inputPlayerId, "Random")
+        self.statesRates = []
     
     ##
     #getPlacement
@@ -218,3 +222,76 @@ class AIPlayer(Player):
             if con.type is TUNNEL:
                 count += 1
         return count
+
+    ##
+    #getNextState
+    #Desctription: Given a move, figure out how that move would affect the state
+    #and return that changed state.
+    #
+    #Parameters:
+    #   currentState - The current state of the game
+    #   move - The move chosen that could change the currentState
+    #
+    #Return: A copy of the currentState after it has been changed by the move
+    ##
+    def getNextState(self, currentState, move):
+        returnState = currentState.fastclone()
+
+        #check move type
+        if move.moveType == MOVE_ANT:
+            startCoord = move.coordList[0]
+            endCoord = move.coordList[-1]
+
+            #take ant from start coord
+            antToMove = getAntAt(returnState, startCoord)
+            #if the ant is null, return
+            if antToMove is None:
+                return returnState
+
+            #change ant's coords and hasMoved status
+            antToMove.coords = (endCoord[0], endCoord[1])
+            antToMove.hasMoved = True
+
+        elif move.moveType == BUILD:
+            coord = move.coordList[0]
+            currentPlayerInv = returnState.inventories[returnState.whoseTurn]
+
+            #subtract the cost of the item from the player's food count
+            if move.buildType == TUNNEL:
+                currentPlayerInv.foodCount -= CONSTR_STATS[move.buildType][BUILD_COST]
+
+                tunnel = Building(coord, TUNNEL, returnState.whoseTurn)
+                returnState.inventories[returnState.whoseTurn].constrs.append(tunnel)
+            else:
+                currentPlayerInv.foodCount -= UNIT_STATS[move.buildType][COST]
+
+                ant = Ant(coord, move.buildType, returnState.whoseTurn)
+                ant.hasMoved = True
+                returnState.inventories[returnState.whoseTurn].ants.append(ant)
+
+        elif move.moveType == END:
+            #take care of end of turn business for ants and contructions
+            for ant in returnState.inventories[returnState.whoseTurn].ants:
+                constrUnderAnt = getConstrAt(returnState, ant.coords)
+                if constrUnderAnt is not None:
+                    #if constr is enemy's and ant hasn't moved, affect capture health of buildings
+                    if type(constrUnderAnt) is Building and not ant.hasMoved and not constrUnderAnt.player == returnState.whoseTurn:
+                        constrUnderAnt.captureHealth -= 1
+                        if constrUnderAnt.captureHealth == 0 and constrUnderAnt.type != ANTHILL:
+                            constrUnderAnt.player = returnState.whoseTurn
+                            constrUnderAnt.captureHealth = CONSTR_STATS[constrUnderAnt.type][CAP_HEALTH]
+                    #have all worker ants on food sources gather food
+                    elif constrUnderAnt.type == FOOD and ant.type == WORKER:
+                        ant.carrying = True
+                    #deposit carried food (only workers carry)
+                    elif (constrUnderAnt.type == ANTHILL or constrUnderAnt.type == TUNNEL) and ant.carrying:
+                        returnState.inventories[returnState.whoseTurn].foodCount += 1
+                        ant.carrying = False
+
+                #reset hasMoved on all ants of player
+                ant.hasMoved = False
+
+            #set the turn to the opponent's move
+            returnState.whoseTurn = 1 - returnState.whoseTurn
+
+        return returnState
