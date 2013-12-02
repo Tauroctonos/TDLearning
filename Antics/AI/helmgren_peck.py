@@ -1,4 +1,5 @@
 import random
+import pickle
 from Player import *
 from Constants import *
 from Building import *
@@ -8,8 +9,10 @@ from Construction import CONSTR_STATS
 from Ant import UNIT_STATS
 from Move import Move
 from GameState import addCoords
+
+
 ##
-#AIPlayer
+#SmartAIPlayer
 #Description: The responsbility of this class is to interact with the game by
 #deciding a valid move based on a given game state. This class has methods that
 #will be implemented by students in Dr. Nuxoll's AI course.
@@ -17,7 +20,7 @@ from GameState import addCoords
 #Variables:
 #   playerId - The id of the player.
 ##
-class AIPlayer(Player):
+class SmartAIPlayer(Player):
 
     #__init__
     #Description: Creates a new Player
@@ -26,7 +29,7 @@ class AIPlayer(Player):
     #   inputPlayerId - The id to give the new player (int)
     ##
     def __init__(self, inputPlayerId):
-        super(AIPlayer,self).__init__(inputPlayerId, "Random")
+        super(SmartAIPlayer,self).__init__(inputPlayerId, "Goat Semen")
         self.statesRates = []
     
     ##
@@ -44,6 +47,12 @@ class AIPlayer(Player):
     #Return: The coordinates of where the construction is to be placed
     ##
     def getPlacement(self, currentState):
+        try:
+            f = open('peck_raab_helmgren.txt')
+            f.close()
+            self.loadUtils()
+        except IOError as e:
+            pass
         numToPlace = 0
         #implemented by students to return their next move
         if currentState.phase == SETUP_PHASE_1:    #stuff on my side
@@ -102,53 +111,26 @@ class AIPlayer(Player):
         #If my inventory is still none, then I don't have one.
         if myInv == None:
             return Move(END, None, None)
-        #Try to build an ant
-        if myInv.foodCount >= UNIT_STATS[SOLDIER][COST]:  #is there enough food?
-            #Detect whether the anthill has nothing on top of it
-            hill = myInv.getAnthill()
-            if currentState.board[hill.coords[0]][hill.coords[1]].ant == None:
-                #build a random ant
-                toPlace = random.randint(WORKER, R_SOLDIER)
-                return Move(BUILD, [hill.coords], random.randint(WORKER, R_SOLDIER))
-        #See if you can move any ants
-        antsToMove = []
-        for ant in myInv.ants:
-            if not ant.hasMoved:
-                antsToMove.append(ant)
-        #Move first of these ants
-        if antsToMove != []:
-            chosen = antsToMove[0]
-            coordList = [chosen.coords]
-            totalCost = 0
-            lastStep = None
-            while totalCost < UNIT_STATS[chosen.type][MOVEMENT]:
-                #pick a random direction that won't move me back.
-                possibleDirections = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-                validDirections = []
-                for direction in possibleDirections:
-                    nextLoc = addCoords(coordList[-1], direction)
-                    #Check that the move would be inside the board bounds
-                    if nextLoc[0] > 9 or nextLoc[0] < 0 or nextLoc[1] > 9 or nextLoc[1] < 0:
-                        continue
-                    #Check that the move cost would not exceed what this ant is capable of
-                    costOfStep = currentState.board[nextLoc[0]][nextLoc[1]].getMoveCost()
-                    if currentState.board[nextLoc[0]][nextLoc[1]].ant == None and UNIT_STATS[chosen.type][MOVEMENT] >= totalCost + costOfStep:
-                        validDirections.append(direction)
-                #If no directions are valid, break out of the loop.
-                if validDirections == []:
+
+        moves = listAllLegalMoves(currentState)
+
+        flag = False
+        #if I find a new move, add it to my list of states.
+        for move in moves:
+            for seen in self.statesRates:
+                if move == seen:
+                    flag = True
                     break
-                else:
-                    #Choose a random direction
-                    randDir = random.randint(0, len(validDirections) - 1)
-                    #Apply it
-                    nextCoord = addCoords(coordList[-1], validDirections[randDir])
-                    coordList.append(nextCoord)
-                    #Add its cost to the total move cost
-                    totalCost += currentState.board[nextCoord[0]][nextCoord[1]].getMoveCost()
-            #Return the chosen move
-            return Move(MOVE_ANT, coordList, None)
-        #If I can't to anything, end turn
-        return Move(END, None, None)
+            if not flag:
+                self.statesRates.append((move, -0.01))
+                flag = False
+
+
+        #return a random move
+        return moves[random.randint(0, moves.__len__()-1)]
+
+
+
     
     ##
     #getAttack
@@ -291,7 +273,29 @@ class AIPlayer(Player):
                 #reset hasMoved on all ants of player
                 ant.hasMoved = False
 
-            #set the turn to the opponent's move
-            returnState.whoseTurn = 1 - returnState.whoseTurn
+            #leave whose turn alone so that the state evaluator never has to think.
 
         return returnState
+
+    ##
+    #saveUtils
+    #Description: Saves our stored utils to a file!
+    def saveUtils(self):
+        p = self.statesRates
+        f = open('peck_raab_helmgren.txt', 'w')
+        pickle.dump(p, f)
+        f.close()
+
+    ##
+    #loadUtils
+    #Description: Loads the utils in our file
+    def loadUtils(self):
+        f = open('peck_raab_helmgren.txt', 'r')
+        self.statesRates = pickle.load(f)
+        f.close()
+
+    ##
+    #registerWin
+    #Description: Overridden method called when the game is over.
+    def registerWin(self, hasWon):
+        self.saveUtils()
