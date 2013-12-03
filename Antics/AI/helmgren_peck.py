@@ -1,4 +1,5 @@
 import random
+import math
 import pickle
 from Player import *
 from Constants import *
@@ -29,10 +30,11 @@ class AIPlayer(Player):
     #   inputPlayerId - The id to give the new player (int)
     ##
     def __init__(self, inputPlayerId):
-        super(AIPlayer,self).__init__(inputPlayerId, "Goat Semen")
+        super(AIPlayer,self).__init__(inputPlayerId, "Pagan Berm Heckler")
         self.statesRates = []
         self.epsilon = .4
         self.whereAmI = None
+        self.learnCount = 1
 
     ##
     #getPlacement
@@ -115,8 +117,9 @@ class AIPlayer(Player):
             return Move(END, None, None)
 
         moves = listAllLegalMoves(currentState)
-
-        currentIndex
+        currentIndex = None
+        if self.whereAmI is not None:
+            currentIndex = self.whereAmI
 
         flag = False
         bestMove = None
@@ -134,18 +137,34 @@ class AIPlayer(Player):
                         self.whereAmI = count
                         bestStateScore = seen[1]
                         bestMove = move
+                        if currentIndex is not None:
+                            self.statesRates[currentIndex][1] += math.pow(.8, (self.learnCount/20000))
                     break
             if not flag:
                 self.statesRates.append([consoliState, -0.01])
                 self.whereAmI = len(self.statesRates) - 1
                 flag = False
 
-        if random.random() > self.epsilon:
+        if random.random() > math.pow(self.epsilon, (self.learnCount/3)):
             if bestMove is not None:
+                self.learnCount += 1
                 return bestMove
 
         #return a random move
         ret = moves[random.randint(0, moves.__len__()-1)]
+
+        for move in moves:
+            if ret is move:
+                count = 0
+                state = self.getNextState(currentState, move)
+                consoliState = self.consolidateState(state)
+                for seen in self.statesRates:
+                    if consoliState is seen:
+                        self.whereAmI = count
+                        break
+                    count += 1
+                break
+
         return ret
 
 
