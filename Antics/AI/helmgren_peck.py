@@ -20,7 +20,7 @@ from GameState import addCoords
 #Variables:
 #   playerId - The id of the player.
 ##
-class SmartAIPlayer(Player):
+class AIPlayer(Player):
 
     #__init__
     #Description: Creates a new Player
@@ -29,9 +29,11 @@ class SmartAIPlayer(Player):
     #   inputPlayerId - The id to give the new player (int)
     ##
     def __init__(self, inputPlayerId):
-        super(SmartAIPlayer,self).__init__(inputPlayerId, "Goat Semen")
+        super(AIPlayer,self).__init__(inputPlayerId, "Goat Semen")
         self.statesRates = []
-    
+        self.epsilon = .4
+        self.whereAmI = None
+
     ##
     #getPlacement
     #
@@ -91,7 +93,7 @@ class SmartAIPlayer(Player):
             return moves
         else:
             return [(0, 0)]
-    
+
     ##
     #getMove
     #Description: Gets the next move from the Player.
@@ -114,24 +116,41 @@ class SmartAIPlayer(Player):
 
         moves = listAllLegalMoves(currentState)
 
+        currentIndex
+
         flag = False
+        bestMove = None
+        bestStateScore = 0
         #if I find a new move, add it to my list of states.
         for move in moves:
+            state = self.getNextState(currentState, move)
+            consoliState = self.consolidateState(state)
+            count = -1
             for seen in self.statesRates:
-                if move == seen:
+                count += 1
+                if consoliState == seen[0]:
                     flag = True
+                    if bestStateScore < seen[1]:
+                        self.whereAmI = count
+                        bestStateScore = seen[1]
+                        bestMove = move
                     break
             if not flag:
-                self.statesRates.append((move, -0.01))
+                self.statesRates.append([consoliState, -0.01])
+                self.whereAmI = len(self.statesRates) - 1
                 flag = False
 
+        if random.random() > self.epsilon:
+            if bestMove is not None:
+                return bestMove
 
         #return a random move
-        return moves[random.randint(0, moves.__len__()-1)]
+        ret = moves[random.randint(0, moves.__len__()-1)]
+        return ret
 
 
 
-    
+
     ##
     #getAttack
     #Description: Gets the attack to be made from the Player
@@ -158,9 +177,16 @@ class SmartAIPlayer(Player):
     def consolidateState(self, state):
         myID = state.whoseTurn
         opID = (myID + 1) % 2
-
+        myQueen = None
+        goatSemenQueen = None
         #Get the queen healths of both sides
-        queHealths = (state.inventories[myID].queen.health, state.inventories[opID].queen.health)
+        for ant in state.inventories[myID].ants:
+            if ant.type == QUEEN:
+                myQueen = ant
+        for ant in state.inventories[opID].ants:
+            if ant.type == QUEEN:
+                goatSemenQueen = ant
+        queHealths = (myQueen.health, goatSemenQueen.health)
 
         #Get the total healths of both sides
         totHealths = (self.totalAntHealth(state, myID), self.totalAntHealth(state, opID))
@@ -298,4 +324,8 @@ class SmartAIPlayer(Player):
     #registerWin
     #Description: Overridden method called when the game is over.
     def registerWin(self, hasWon):
+        if hasWon:
+            self.statesRates[self.whereAmI][1] = 1 #GLORY FOR THE VICTORIOUS
+        else:
+            self.statesRates[self.whereAmI][1] = -1 #SHAME FOR THE DEFEATED
         self.saveUtils()
